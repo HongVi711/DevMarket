@@ -6,3 +6,6 @@ Website bán mã nguồn là nền tảng giúp người dùng mua, tải và h�
 
 # Login thành công
 ![Screenshot 2025-04-22 141313](https://github.com/user-attachments/assets/ee2e156a-f3a0-4669-bd53-dd5aa9d954e8)
+
+# Logout thành công
+![Screenshot 2025-04-25 164906](https://github.com/user-attachments/assets/e7bf107d-722a-4fd2-befe-f694d0c8b50b)
