@@ -14,6 +14,7 @@ const sendEmail = async (options) => {
   // Define email options
   const mailOptions = {
     from: process.env.EMAIL_FROM,
+    // from: 'Your Website <no-reply@yourwebsite.com>',
     to: options.email,
     subject: options.subject,
     text: options.message,
