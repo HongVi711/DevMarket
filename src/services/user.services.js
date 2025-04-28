@@ -49,16 +49,34 @@ exports.sendVerificationEmail = async (userId, protocol, host) => {
 };
 
 // Đăng ký người dùng
-exports.register = async ({ name, email, password }, protocol, host) => {
+exports.register = async ({ name, email, password, role, storeName }, protocol, host) => {
   try {
-    console.log('Bắt đầu đăng ký:', { name, email });
+    console.log('Bắt đầu đăng ký:', { name, email, role,storeName });
 
     const existingUser = await User.findOne({ email });
     if (existingUser) {
       throw new AppError('Email đã được sử dụng', 400);
     }
 
-    const user = await User.create({ name, email, password, role: 'user' });
+    const validRoles = ['user', 'seller']; 
+    const userRole = validRoles.includes(role) ? role : 'user';
+
+    if (userRole === 'seller' && !storeName) {
+      throw new AppError('Tên cửa hàng là bắt buộc cho vai trò seller', 400);
+    }
+
+    const userData = {
+      name,
+      email,
+      password,
+      role: userRole,
+    };
+
+    if (userRole === 'seller') {
+      userData.storeName = storeName;
+    }
+
+    const user = await User.create(userData);
     console.log('Người dùng đã tạo:', user._id);
 
     try {
@@ -127,14 +145,12 @@ exports.login = async ({ email, password }) => {
 
 // Đăng xuất
 exports.logout = () => {
-  console.log('Đăng xuất được gọi');
   return { message: 'Đăng xuất thành công' };
 };
 
 // Gửi lại email xác thực
 exports.resendVerificationEmail = async (email, protocol, host) => {
   try {
-    console.log('Yêu cầu gửi lại email xác thực:', { email });
     const user = await User.findOne({ email });
     if (!user) {
       throw new AppError('Không tìm thấy người dùng', 404);
@@ -144,10 +160,44 @@ exports.resendVerificationEmail = async (email, protocol, host) => {
     }
 
     const { message } = await exports.sendVerificationEmail(user._id, protocol, host);
-    console.log(`Email xác thực đã gửi lại cho ${email}`);
-    return { message };
   } catch (error) {
-    console.error('Lỗi trong resendVerificationEmail:', error.message);
     throw error;
   }
 };
+
+// Đổi mật khẩu
+exports.changePassword = async (userId, currentPassword, newPassword) => {
+  try {
+    // Tìm người dùng và lấy mật khẩu
+    const user = await User.findById(userId).select('+password');
+    if (!user) {
+      throw new AppError('Không tìm thấy người dùng', 404);
+    }
+
+    // Kiểm tra mật khẩu hiện tại
+    if (!(await user.comparePassword(currentPassword))) {
+      throw new AppError('Mật khẩu hiện tại không đúng', 401);
+    }
+
+    // Cập nhật mật khẩu mới
+    user.password = newPassword;
+    await user.save({ validateBeforeSave: true });
+    
+    console.log(`Đổi mật khẩu thành công cho ${user.email}`);
+    
+    // Tạo token mới sau khi đổi mật khẩu
+    const token = signToken(user._id);
+    return { 
+      message: 'Đổi mật khẩu thành công',
+      token 
+    };
+  } catch (error) {
+    console.error('Lỗi trong changePassword:', error.message);
+    throw error;
+  }
+};
+
+
+
+
+

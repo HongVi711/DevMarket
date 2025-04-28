@@ -25,7 +25,7 @@ const userSchema = new mongoose.Schema({
   },
   role: {
     type: String,
-    enum: ['user', 'admin'],
+    enum: ['user', 'admin', 'seller'],
     default: 'user',
   },
   isVerified: {
@@ -39,6 +39,14 @@ const userSchema = new mongoose.Schema({
   verificationTokenExpires: {
     type: Date,
     select: false,
+  },
+  storeName: {
+    type: String,
+    trim: true,
+    maxlength: [100, 'Tên cửa hàng không được vượt quá 100 ký tự'],
+    required: function () {
+      return this.role === 'seller';
+    },
   },
   createdAt: {
     type: Date,
