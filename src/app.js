@@ -1,23 +1,30 @@
-const express = require('express');
-const morgan = require('morgan');
-const helmet = require('helmet');
-const cors = require('cors');
-const userRoutes = require('./routes/user.routes');
-const errorHandler = require('./middlewares/error.handler');
+const express = require("express");
+const morgan = require("morgan");
+const cors = require("cors");
+const path = require("path");
+require("./cron/expireTokens");
+
+//Routes
+const roleRoute = require("./routers/role.route");
+const authRoute = require("./routers/auth.route");
+const userRoute = require("./routers/user.route");
+//==============================
+//Middlewares
+const errorMiddleware = require("./middlewares/error.middleware");
+//==============================
 const app = express();
 
-// Middleware cho phép xử lý dữ liệu dạng JSON
-app.set('trust proxy', true);
-app.use(helmet());
 app.use(cors());
+app.use(morgan("dev"));
 app.use(express.json());
-app.use(morgan('dev'));
 
-// Routes
-app.use('/api/users', userRoutes);
+app.use("/public", express.static(path.join(__dirname, "public")));
+//Routes
+app.use("/api/v1/auth", authRoute);
+app.use("/api/v1/roles", roleRoute);
+app.use("/api/v1/users", userRoute);
 
-// Error Handler
-app.use(errorHandler);
-
-// Export app ra ngoài
+// Error handling middleware (luôn đặt cuối cùng)
+app.use(errorMiddleware);
+//==============================
 module.exports = app;
