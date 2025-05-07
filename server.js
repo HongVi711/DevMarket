@@ -1,11 +1,15 @@
-const app = require('./src/app');
+const http = require("http");
+const app = require("./src/app");
+const connectDB = require("./src/configs/database");
+
+require("dotenv").config();
+
 const port = process.env.PORT || 3000;
-require('dotenv').config();
 
-app.get('/', (req, res) => {
-    res.send('Hello from server.js!');
-});
+connectDB();
 
-app.listen(port, () => {
-    console.log(`Server is running at http://localhost:${port}`);
+const server = http.createServer(app);
+
+server.listen(port, "0.0.0.0", () => {
+  console.log(`Server running on port ${port}`);
 });
