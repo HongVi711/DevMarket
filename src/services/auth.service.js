@@ -8,7 +8,6 @@ exports.register = async (user) => {
   try {
     user.role = await roleRepository.getRoleByName("user");
     const createdUser = await userRepository.registerUser(user);
-
     try {
       await Email.sendEmail({
         email: user.email,

@@ -13,6 +13,15 @@ exports.createRole = async (name, description, permissions) => {
   }
 };
 
+exports.deleteRole = async (name) => {
+  try {
+    const role = await roleRepository.deleteRoleByName(name);
+    return role;
+  } catch (error) {
+    throw error;
+  }
+};
+
 exports.getAllRoles = async (page = 1, limit = 10) => {
   try {
     const skip = (page - 1) * limit;

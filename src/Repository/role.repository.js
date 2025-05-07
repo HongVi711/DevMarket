@@ -60,6 +60,13 @@ exports.deleteRoleByName = async (name) => {
     const role = await roleModel.findOneAndDelete({
       name: new RegExp(`^${name}$`, "i")
     });
+
+    const users = await userModel.find({ role: role._id });
+
+    for (const user of users) {
+      user.role = null;
+      await user.save();
+    }
     return role;
   } catch (error) {
     throw error;

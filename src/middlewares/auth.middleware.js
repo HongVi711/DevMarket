@@ -72,7 +72,14 @@ exports.protect = async (req, res, next) => {
 exports.restrictTo = (...roles) => {
   return async (req, res, next) => {
     const user = await User.findById(req.user.id).populate("role", "name");
-
+    // Kiểm tra nếu user hoặc user.role không tồn tại
+    if (!user || !user.role || !Array.isArray(user.role)) {
+      return responseUtils.unauthorized(
+        res,
+        "Bạn không có quyền để thực hiện chức năng này. Nếu đây là sự nhầm lẫn vui lòng liên hệ QTV để giải quyết.",
+        403
+      );
+    }
     const userRoleNames = user.role.map((r) => r.name);
 
     const hasPermission = userRoleNames.some((roleName) =>

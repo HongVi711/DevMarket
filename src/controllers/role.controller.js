@@ -14,6 +14,21 @@ exports.createRole = async (req, res) => {
   }
 };
 
+exports.deleteRole = async (req, res) => {
+  try {
+    const roleName = req.params.name;
+    const result = await roleService.deleteRole(roleName);
+    return responseFormat.success(
+      res,
+      result,
+      "Role deleted successfully",
+      204
+    );
+  } catch (error) {
+    return responseFormat.error(res, error.message);
+  }
+};
+
 exports.getAllRoles = async (req, res) => {
   try {
     const page = parseInt(req.query.page) || 1;

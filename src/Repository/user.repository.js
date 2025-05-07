@@ -15,7 +15,7 @@ exports.registerUser = async (user) => {
   try {
     user.otp = createOTP(6);
     user.otpExpires = Date.now() + 10 * 60 * 1000;
-    const createdUser = await userModel.create(user);
+    const createdUser = (await userModel.create(user)).populate("role");
     return createdUser;
   } catch (error) {
     throw error;
@@ -24,7 +24,14 @@ exports.registerUser = async (user) => {
 
 exports.getAllUsers = async (skip, limit) => {
   try {
-    const users = await userModel.find().skip(skip).limit(limit);
+    const users = await userModel
+      .find()
+      .populate("role")
+      .select("displayName email phone address photo role active lock")
+      .skip(skip)
+      .limit(limit)
+      .sort({ createdAt: -1 });
+
     return users;
   } catch (error) {
     throw error;
@@ -33,7 +40,10 @@ exports.getAllUsers = async (skip, limit) => {
 
 exports.getUserById = async (id) => {
   try {
-    const user = await userModel.findById(id);
+    const user = await userModel
+      .findById(id)
+      .select("-password")
+      .populate("role", "name permissions");
     return user;
   } catch (error) {
     throw error;
