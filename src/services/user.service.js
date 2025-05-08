@@ -1,4 +1,5 @@
 const userRepository = require("../Repository/user.repository");
+const roleRepository = require("../Repository/role.repository");
 
 const getAllUsers = async (skip, limit) => {
   return await userRepository.getAllUsers(skip, limit);
@@ -13,6 +14,10 @@ const deleteUserById = async (id) => {
 };
 
 const updateUserById = async (id, user) => {
+  if (user.role == "") {
+    const role = await roleRepository.getRoleByName("user");
+    user.role = role._id;
+  }
   return await userRepository.updateUser(id, user);
 };
 

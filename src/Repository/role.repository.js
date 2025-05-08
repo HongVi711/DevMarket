@@ -1,4 +1,5 @@
 const roleModel = require("../models/role.model");
+const userModel = require("../models/user.model");
 
 exports.getAllRoles = async (skip, limit) => {
   try {
@@ -57,16 +58,20 @@ exports.updateRole = async (name, roleData) => {
 
 exports.deleteRoleByName = async (name) => {
   try {
-    const role = await roleModel.findOneAndDelete({
+    const role = await roleModel.findOne({
+      name: new RegExp(`^${name}$`, "i")
+    });
+    const users = await userModel.find({ role: role._id });
+
+    if (users.length > 0) {
+      throw new Error(
+        "Không thể xoá role, vui lòng gỡ role này trên các người dùng đang sở hữu!"
+      );
+    }
+    await roleModel.deleteOne({
       name: new RegExp(`^${name}$`, "i")
     });
 
-    const users = await userModel.find({ role: role._id });
-
-    for (const user of users) {
-      user.role = null;
-      await user.save();
-    }
     return role;
   } catch (error) {
     throw error;

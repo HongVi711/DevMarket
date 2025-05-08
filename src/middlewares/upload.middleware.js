@@ -18,7 +18,7 @@ const bufferToStream = (buffer) => {
 
 const uploadToCloudinary = (req, res, next) => {
   if (!req.file) {
-    return res.status(400).json({ error: "No file uploaded" });
+    return next();
   }
 
   const stream = cloudinary.uploader.upload_stream(

@@ -61,12 +61,3 @@ exports.updateRole = async (name, roleData) => {
     throw error;
   }
 };
-
-exports.deleteRoleByName = async (name) => {
-  try {
-    const role = await roleRepository.deleteRoleByName(name);
-    return role;
-  } catch (error) {
-    throw error;
-  }
-};

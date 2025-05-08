@@ -22,7 +22,7 @@ exports.deleteRole = async (req, res) => {
       res,
       result,
       "Role deleted successfully",
-      204
+      200
     );
   } catch (error) {
     return responseFormat.error(res, error.message);
@@ -55,21 +55,6 @@ exports.updateRole = async (req, res) => {
     const roleData = req.body;
     const role = await roleService.updateRole(roleName, roleData);
     return responseFormat.success(res, role, "Role updated successfully");
-  } catch (error) {
-    return responseFormat.error(res, error.message);
-  }
-};
-
-exports.deleteRoleByName = async (req, res) => {
-  try {
-    const roleName = req.params.name;
-    const result = await roleService.deleteRoleByName(roleName);
-    return responseFormat.success(
-      res,
-      result,
-      "Role deleted successfully",
-      204
-    );
   } catch (error) {
     return responseFormat.error(res, error.message);
   }

@@ -76,7 +76,6 @@ const updateUserById = async (req, res) => {
       );
     }
 
-    // return responseFormat.error(res, "Đã có lỗi xảy ra. Vui lòng thử lại.");
     return responseFormat.error(res, error.message);
   }
 };
