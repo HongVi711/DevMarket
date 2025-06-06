@@ -19,9 +19,9 @@ exports.register = async (user) => {
           .replace("{{OTP_CODE}}", user.otp)
       });
     } catch (error) {
-      user.emailVerificationToken = undefined;
-      user.emailVerificationExpires = undefined;
-      await user.save({ validateBeforeSave: false });
+      createdUser.emailVerificationToken = undefined;
+      createdUser.emailVerificationExpires = undefined;
+      await createdUser.save({ validateBeforeSave: false });
 
       throw new AppError(
         "Có lỗi trong quá trình gửi email, vui lòng thử lại sau",
