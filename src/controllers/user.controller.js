@@ -7,16 +7,19 @@ const getAllUsers = async (req, res) => {
     const users = await userService.getAllUsers();
     return responseFormat.success(res, users);
   } catch (error) {
+    // Nếu là AppError thì trả đúng format bạn đã chuẩn hoá
     if (error instanceof AppError) {
-      return responseFormat.error(
+      return responseFormat.error({
         res,
-        error.message,
-        error.errorCode,
-        error.statusCode
-      );
+        message: error.message,
+        errorCode: error.errorCode,
+        statusCode: error.statusCode,
+        errorObject: error
+      });
     }
 
-    return responseFormat.error(res, "Đã có lỗi xảy ra. Vui lòng thử lại.");
+    // Còn lại là lỗi không đoán trước được
+    return responseFormat.error({ res });
   }
 };
 
@@ -25,16 +28,19 @@ const getUserById = async (req, res) => {
     const user = await userService.getUserById(req.params.id);
     return responseFormat.success(res, user);
   } catch (error) {
+    // Nếu là AppError thì trả đúng format bạn đã chuẩn hoá
     if (error instanceof AppError) {
-      return responseFormat.error(
+      return responseFormat.error({
         res,
-        error.message,
-        error.errorCode,
-        error.statusCode
-      );
+        message: error.message,
+        errorCode: error.errorCode,
+        statusCode: error.statusCode,
+        errorObject: error
+      });
     }
 
-    return responseFormat.error(res, "Đã có lỗi xảy ra. Vui lòng thử lại.");
+    // Còn lại là lỗi không đoán trước được
+    return responseFormat.error({ res });
   }
 };
 
@@ -43,16 +49,19 @@ const deleteUserById = async (req, res) => {
     const user = await userService.deleteUserById(req.params.id);
     return responseFormat.success(res, user, "Xóa người dùng thành công.", 200);
   } catch (error) {
+    // Nếu là AppError thì trả đúng format bạn đã chuẩn hoá
     if (error instanceof AppError) {
-      return responseFormat.error(
+      return responseFormat.error({
         res,
-        error.message,
-        error.errorCode,
-        error.statusCode
-      );
+        message: error.message,
+        errorCode: error.errorCode,
+        statusCode: error.statusCode,
+        errorObject: error
+      });
     }
 
-    return responseFormat.error(res, "Đã có lỗi xảy ra. Vui lòng thử lại.");
+    // Còn lại là lỗi không đoán trước được
+    return responseFormat.error({ res });
   }
 };
 
@@ -67,16 +76,19 @@ const updateUserById = async (req, res) => {
       200
     );
   } catch (error) {
+    // Nếu là AppError thì trả đúng format bạn đã chuẩn hoá
     if (error instanceof AppError) {
-      return responseFormat.error(
+      return responseFormat.error({
         res,
-        error.message,
-        error.errorCode,
-        error.statusCode
-      );
+        message: error.message,
+        errorCode: error.errorCode,
+        statusCode: error.statusCode,
+        errorObject: error
+      });
     }
 
-    return responseFormat.error(res, error.message);
+    // Còn lại là lỗi không đoán trước được
+    return responseFormat.error({ res });
   }
 };
 

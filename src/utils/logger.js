@@ -6,8 +6,11 @@ const logger = winston.createLogger({
     winston.format.timestamp({
       format: "DD-MM-YYYY|HH:mm:ss"
     }),
-    winston.format.printf(({ timestamp, level, message }) => {
-      return `${timestamp} ${level}: ${message}`;
+    winston.format.errors({ stack: true }), // Bắt cả stack khi dùng Error object
+    winston.format.printf(({ timestamp, level, message, stack }) => {
+      return `${timestamp} [${level.toUpperCase()}]: ${message}${
+        stack ? `\nStack trace: ${stack}` : ""
+      }`;
     })
   ),
   transports: [

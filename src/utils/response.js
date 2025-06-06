@@ -24,12 +24,13 @@ const responseUtils = {
   },
 
   // Error response
-  error(
+  error({
     res,
-    message = "An error occurred",
+    message = "Đã có lỗi xảy ra. Vui lòng thử lại.",
     errorCode = "INTERNAL_SERVER_ERROR",
-    statusCode = 500
-  ) {
+    statusCode = 500,
+    errorObject = null
+  }) {
     const responseObj = {
       status: "error",
       message,
@@ -37,9 +38,18 @@ const responseUtils = {
       statusCode,
       timestamp: new Date().toLocaleString("en-GB", options).replace(",", " -")
     };
-    logger.error(
-      `${responseObj.timestamp} - ${responseObj.errorCode} - ${responseObj.message} `
-    );
+    if (errorObject instanceof Error) {
+      logger.error(errorObject); // Sẽ có cả message và stack
+    } else if (errorObject !== null) {
+      logger.error(
+        `${
+          responseObj.timestamp
+        } - ${errorCode} - ${message} - ${JSON.stringify(errorObject)}`
+      );
+    } else {
+      logger.error(`${responseObj.timestamp} - ${errorCode} - ${message}`);
+    }
+
     return res.status(statusCode).json(responseObj);
   },
 

@@ -10,7 +10,19 @@ exports.createRole = async (req, res) => {
     );
     return responseFormat.success(res, role, "Role created successfully", 201);
   } catch (error) {
-    return responseFormat.error(res, error.message);
+    // Nếu là AppError thì trả đúng format bạn đã chuẩn hoá
+    if (error instanceof AppError) {
+      return responseFormat.error({
+        res,
+        message: error.message,
+        errorCode: error.errorCode,
+        statusCode: error.statusCode,
+        errorObject: error
+      });
+    }
+
+    // Còn lại là lỗi không đoán trước được
+    return responseFormat.error({ res, message: error.message });
   }
 };
 
@@ -25,7 +37,19 @@ exports.deleteRole = async (req, res) => {
       200
     );
   } catch (error) {
-    return responseFormat.error(res, error.message);
+    // Nếu là AppError thì trả đúng format bạn đã chuẩn hoá
+    if (error instanceof AppError) {
+      return responseFormat.error({
+        res,
+        message: error.message,
+        errorCode: error.errorCode,
+        statusCode: error.statusCode,
+        errorObject: error
+      });
+    }
+
+    // Còn lại là lỗi không đoán trước được
+    return responseFormat.error({ res, message: error.message });
   }
 };
 
@@ -36,7 +60,19 @@ exports.getAllRoles = async (req, res) => {
     const roles = await roleService.getAllRoles(page, limit);
     return responseFormat.success(res, roles, "Roles fetched successfully");
   } catch (error) {
-    return responseFormat.error(res, error.message);
+    // Nếu là AppError thì trả đúng format bạn đã chuẩn hoá
+    if (error instanceof AppError) {
+      return responseFormat.error({
+        res,
+        message: error.message,
+        errorCode: error.errorCode,
+        statusCode: error.statusCode,
+        errorObject: error
+      });
+    }
+
+    // Còn lại là lỗi không đoán trước được
+    return responseFormat.error({ res, message: error.message });
   }
 };
 
@@ -45,7 +81,19 @@ exports.getRoleByName = async (req, res) => {
     const role = await roleService.getRoleByName(req.params.name);
     return responseFormat.success(res, role, "Role fetched successfully");
   } catch (error) {
-    return responseFormat.error(res, error.message);
+    // Nếu là AppError thì trả đúng format bạn đã chuẩn hoá
+    if (error instanceof AppError) {
+      return responseFormat.error({
+        res,
+        message: error.message,
+        errorCode: error.errorCode,
+        statusCode: error.statusCode,
+        errorObject: error
+      });
+    }
+
+    // Còn lại là lỗi không đoán trước được
+    return responseFormat.error({ res, message: error.message });
   }
 };
 
@@ -56,6 +104,18 @@ exports.updateRole = async (req, res) => {
     const role = await roleService.updateRole(roleName, roleData);
     return responseFormat.success(res, role, "Role updated successfully");
   } catch (error) {
-    return responseFormat.error(res, error.message);
+    // Nếu là AppError thì trả đúng format bạn đã chuẩn hoá
+    if (error instanceof AppError) {
+      return responseFormat.error({
+        res,
+        message: error.message,
+        errorCode: error.errorCode,
+        statusCode: error.statusCode,
+        errorObject: error
+      });
+    }
+
+    // Còn lại là lỗi không đoán trước được
+    return responseFormat.error({ res, message: error.message });
   }
 };

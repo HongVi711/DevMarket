@@ -15,14 +15,20 @@ exports.register = async (req, res) => {
     if (error.code === 11000) {
       const field = Object.keys(error.keyValue)[0];
       const value = error.keyValue[field];
-      return responseFormat.error(
+      return responseFormat.error({
         res,
-        `${field.toLowerCase()} đã tồn tại, vui lòng chọn 1 giá trị khác`,
-        `DUPPLICATE_${field.toUpperCase()}`,
-        409
-      );
+        message: `${field.toLowerCase()} đã tồn tại, vui lòng chọn 1 giá trị khác`,
+        errorCode: `DUPPLICATE_${field.toUpperCase()}`,
+        statusCode: 409
+      });
     }
-    return responseFormat.error(res, error.message);
+    return responseFormat.error({
+      res,
+      message: error.message,
+      errorCode: error.errorCode,
+      statusCode: error.statusCode,
+      errorObject: error
+    });
   }
 };
 
@@ -36,15 +42,22 @@ exports.verifyEmail = async (req, res) => {
     );
   } catch (error) {
     if (error instanceof AppError) {
-      return responseFormat.error(
+      return responseFormat.error({
         res,
-        error.message,
-        error.errorCode,
-        error.statusCode
-      );
+        message: error.message,
+        errorCode: error.errorCode,
+        statusCode: error.statusCode,
+        errorObject: error
+      });
     }
 
-    return responseFormat.error(res, "Đã có lỗi xảy ra. Vui lòng thử lại.");
+    return responseFormat.error({
+      res,
+      message: "Đã có lỗi xảy ra. Vui lòng thử lại.",
+      errorCode: error.errorCode,
+      statusCode: error.statusCode,
+      errorObject: error
+    });
   }
 };
 
@@ -54,15 +67,16 @@ exports.resendEmail = async (req, res) => {
     return responseFormat.success(res, user, "Gửi OTP về email thành công!");
   } catch (error) {
     if (error instanceof AppError) {
-      return responseFormat.error(
+      return responseFormat.error({
         res,
-        error.message,
-        error.errorCode,
-        error.statusCode
-      );
+        message: error.message,
+        errorCode: error.errorCode,
+        statusCode: error.statusCode,
+        errorObject: error
+      });
     }
 
-    return responseFormat.error(res, "Đã có lỗi xảy ra. Vui lòng thử lại.");
+    return responseFormat.error({ res });
   }
 };
 
@@ -73,16 +87,17 @@ exports.login = async (req, res) => {
   } catch (error) {
     // Nếu là AppError thì trả đúng format bạn đã chuẩn hoá
     if (error instanceof AppError) {
-      return responseFormat.error(
+      return responseFormat.error({
         res,
-        error.message,
-        error.errorCode,
-        error.statusCode
-      );
+        message: error.message,
+        errorCode: error.errorCode,
+        statusCode: error.statusCode,
+        errorObject: error
+      });
     }
 
     // Còn lại là lỗi không đoán trước được
-    return responseFormat.error(res, "Đã có lỗi xảy ra. Vui lòng thử lại.");
+    return responseFormat.error({ res });
   }
 };
 
@@ -104,7 +119,19 @@ exports.changePassword = async (req, res) => {
       "Thay đổi mật khẩu thành công, vui lòng đăng nhập lại!"
     );
   } catch (error) {
-    return responseFormat.error(res, error.message);
+    // Nếu là AppError thì trả đúng format bạn đã chuẩn hoá
+    if (error instanceof AppError) {
+      return responseFormat.error({
+        res,
+        message: error.message,
+        errorCode: error.errorCode,
+        statusCode: error.statusCode,
+        errorObject: error
+      });
+    }
+
+    // Còn lại là lỗi không đoán trước được
+    return responseFormat.error({ res });
   }
 };
 
@@ -119,15 +146,16 @@ exports.resetPassword = async (req, res) => {
   } catch (error) {
     // Nếu là AppError thì trả đúng format bạn đã chuẩn hoá
     if (error instanceof AppError) {
-      return responseFormat.error(
+      return responseFormat.error({
         res,
-        error.message,
-        error.errorCode,
-        error.statusCode
-      );
+        message: error.message,
+        errorCode: error.errorCode,
+        statusCode: error.statusCode,
+        errorObject: error
+      });
     }
 
     // Còn lại là lỗi không đoán trước được
-    return responseFormat.error(res, "Đã có lỗi xảy ra. Vui lòng thử lại.");
+    return responseFormat.error({ res });
   }
 };
