@@ -83,7 +83,11 @@ exports.resendEmail = async (req, res) => {
 exports.login = async (req, res) => {
   try {
     const user = await authService.login(req.body);
-    return responseFormat.success(res, user, "Đăng nhập thành công!");
+    return responseFormat.success(
+      res,
+      { token: user },
+      "Đăng nhập thành công!"
+    );
   } catch (error) {
     // Nếu là AppError thì trả đúng format bạn đã chuẩn hoá
     if (error instanceof AppError) {
