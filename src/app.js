@@ -8,6 +8,7 @@ require("./cron/expireTokens");
 const roleRoute = require("./routers/role.route");
 const authRoute = require("./routers/auth.route");
 const userRoute = require("./routers/user.route");
+const bioRoute = require("./routers/bio.route");
 //==============================
 //Middlewares
 const errorMiddleware = require("./middlewares/error.middleware");
@@ -24,6 +25,7 @@ app.use("/public", express.static(path.join(__dirname, "public")));
 app.use("/api/v1/auth", authRoute);
 app.use("/api/v1/roles", roleRoute);
 app.use("/api/v1/users", userRoute);
+app.use("/api/v1/bio", bioRoute);
 
 // Error handling middleware (luôn đặt cuối cùng)
 app.use(errorMiddleware);
