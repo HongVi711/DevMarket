@@ -25,7 +25,8 @@ const getAllUsers = async (req, res) => {
 
 const getUserById = async (req, res) => {
   try {
-    const user = await userService.getUserById(req.params.id);
+    const userID = req.params.id ? req.params.id : req.user.id;
+    const user = await userService.getUserById(userID);
     return responseFormat.success(res, user);
   } catch (error) {
     // Nếu là AppError thì trả đúng format bạn đã chuẩn hoá
@@ -40,7 +41,7 @@ const getUserById = async (req, res) => {
     }
 
     // Còn lại là lỗi không đoán trước được
-    return responseFormat.error({ res });
+    return responseFormat.error({ res: res, errorObject: error });
   }
 };
 

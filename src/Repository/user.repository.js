@@ -42,7 +42,7 @@ exports.getUserById = async (id) => {
   try {
     const user = await userModel
       .findById(id)
-      .select("-password")
+      .select("id displayName email phone address photo")
       .populate("role", "name permissions");
     return user;
   } catch (error) {
@@ -130,7 +130,7 @@ const signToken = (id, rememberme = false) => {
 exports.login = async (user) => {
   try {
     const userInDatabase = await userModel
-      .findOne({ userName: user.username })
+      .findOne({ userName: user.userName })
       .select("+password");
 
     if (!userInDatabase) {
