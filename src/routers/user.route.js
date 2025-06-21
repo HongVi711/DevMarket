@@ -6,10 +6,13 @@ const {
   uploadToCloudinary
 } = require("../middlewares/upload.middleware");
 const router = express.Router();
+router.get("/info/:id", userController.getUserById);
+
+router.use(authMiddleware.protect);
+router.get("/info", userController.getUserById);
 
 router.use(authMiddleware.protect, authMiddleware.restrictTo("admin", "user"));
 router.get("/", userController.getAllUsers);
-router.get("/:id", userController.getUserById);
 router.put(
   "/:id",
   upload.single("photo"),

@@ -3,11 +3,13 @@ const roleRepository = require("../Repository/role.repository");
 const Email = require("../configs/email");
 const AppError = require("../utils/appError");
 const template = require("../utils/read_file_template_html_for_email");
+const { createBio } = require("../Repository/bio.repository");
 
 exports.register = async (user) => {
   try {
     user.role = await roleRepository.getRoleByName("user");
     const createdUser = await userRepository.registerUser(user);
+    await createBio(createdUser);
     try {
       await Email.sendEmail({
         email: user.email,
