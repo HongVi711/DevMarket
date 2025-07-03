@@ -20,3 +20,20 @@ exports.createBio = async (user) => {
     throw error;
   }
 };
+
+exports.updateBio = async (userId, bioData) => {
+  try {
+    const bio = await bioModel.findOneAndUpdate(
+      { user: userId },
+      { $set: bioData },
+      { new: true, runValidators: true }
+    );
+    
+    if (!bio) {
+      throw new Error("Bio không tồn tại");
+    }
+    return bio;
+  } catch (error) {
+    throw error;
+  }
+};

@@ -1,5 +1,6 @@
 const userRepository = require("../Repository/user.repository");
 const roleRepository = require("../Repository/role.repository");
+const bioRepository = require("../Repository/bio.repository");
 
 const getAllUsers = async (skip, limit) => {
   return await userRepository.getAllUsers(skip, limit);
@@ -21,9 +22,29 @@ const updateUserById = async (id, user) => {
   return await userRepository.updateUser(id, user);
 };
 
+const getUserWithBioById = async (id) => {
+  return await userRepository.getUserWithBioById(id);
+};
+
+const updateUserWithBio = async (id, user, bioData) => {
+  try {
+    // Cập nhật User
+    const updatedUser = await userRepository.updateUser(id, user);
+
+    // Cập nhật Bio
+    const updatedBio = await bioRepository.updateBio(id, bioData);
+
+    return { user: updatedUser, bio: updatedBio };
+  } catch (error) {
+    throw error;
+  }
+};
+
 module.exports = {
   getAllUsers,
   getUserById,
   deleteUserById,
-  updateUserById
+  updateUserById,
+  getUserWithBioById,
+  updateUserWithBio
 };

@@ -1,4 +1,5 @@
 const userModel = require("../models/user.model");
+const bioModel = require("../models/bio.model");
 const jwt = require("jsonwebtoken");
 const AppError = require("../utils/appError");
 const whitelistedTokenModel = require("../models/whitelistedToken.model");
@@ -254,6 +255,28 @@ exports.updatePassword = async (id, user) => {
     }
 
     return updatedUser;
+  } catch (error) {
+    throw error;
+  }
+};
+
+exports.getUserWithBioById = async (id) => {
+  try {
+    const user = await userModel
+      .findById(id)
+      .select("displayName userName email phone photo role active lock")
+      .populate("role", "name permissions");
+    
+    if (!user) {
+      throw new AppError("Không tìm thấy người dùng!", "USER_NOT_FOUND", 404);
+    }
+
+    // Lấy Bio liên quan vì User không tham chiếu trực tiếp đến Bio
+    const bio = await bioModel
+      .findOne({ user: id })
+      .select("Uri backgroundImage address about gender birthday website socialLinks interests skills stats badges");
+
+    return { ...user.toObject(), bio:bio || null };
   } catch (error) {
     throw error;
   }
