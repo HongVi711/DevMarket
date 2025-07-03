@@ -26,3 +26,4 @@ exports.getBioByUri = async (req, res) => {
     return responseFormat.error({ res });
   }
 };
+

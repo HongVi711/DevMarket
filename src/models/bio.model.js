@@ -33,7 +33,23 @@ const bioSchema = new mongoose.Schema(
       github: String
     },
     interests: [String],
-    skills: [String]
+    skills: [String],
+    stats: {
+      totalSales: { type: Number, default: 0 },
+      totalRevenue: { type: Number, default: 0 },
+      totalDownloads: { type: Number, default: 0 },
+      averageRating: { type: Number, default: 0 },
+      totalReviews: { type: Number, default: 0 },
+      followers: { type: Number, default: 0 },
+      following: { type: Number, default: 0 }
+    },
+    badges: [
+      {
+        name: { type: String, required: true },
+        icon: { type: String, required: true },
+        description: { type: String, required: true }
+      }
+    ]
   },
   { timestamps: true }
 );

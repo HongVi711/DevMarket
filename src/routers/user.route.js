@@ -1,25 +1,24 @@
 const express = require("express");
 const userController = require("../controllers/user.controller");
 const authMiddleware = require("../middlewares/auth.middleware");
-const {
-  upload,
-  uploadToCloudinary
-} = require("../middlewares/upload.middleware");
+const {upload,uploadToCloudinary} = require("../middlewares/upload.middleware");
 const router = express.Router();
+
 router.get("/info/:id", userController.getUserById);
 
 router.use(authMiddleware.protect);
 router.get("/info", userController.getUserById);
-
+router.get("/:id/bio", userController.getUserWithBioById);
 router.use(authMiddleware.protect, authMiddleware.restrictTo("admin", "user"));
 router.get("/", userController.getAllUsers);
+//router.put("/:id",upload.single("photo"),uploadToCloudinary,userController.updateUserById);
+
 router.put(
   "/:id",
-  upload.single("photo"),
+  upload,
   uploadToCloudinary,
-  userController.updateUserById
+  userController.updateUserWithBio
 );
-
 router.use(authMiddleware.protect, authMiddleware.restrictTo("admin"));
 router.delete("/:id", userController.deleteUserById);
 
