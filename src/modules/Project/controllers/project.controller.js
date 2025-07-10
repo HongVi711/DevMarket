@@ -45,6 +45,7 @@ exports.createProject = async (req, res) => {
         const newProject = await projectService.createProject(projectData, userId);
         return responseFormat.success(res, newProject,"Tạo project thành công", 200 );
     } catch (error) {
+        console.error("Create project error:", error.message);
         if (error instanceof AppError) {
             return responseFormat.error({
                 res,

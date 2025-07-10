@@ -21,6 +21,7 @@ exports.find = (query, sort) => {
         .find(query)
         .populate("authorId", "displayName photo email")
         .populate("learningPackId", "title description")
+        .populate("technologies", "name slug")
         .select("title slug description thumbnailUrl demoVideoUrl level technologies price discountPrice createdAt authorId isPublished isBundleItem learningPackId")
         .sort(sort);
 };
