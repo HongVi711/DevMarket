@@ -1,6 +1,6 @@
 const cron = require("node-cron");
-const WhitelistedToken = require("../models/whitelistedToken.model");
-const BlacklistedToken = require("../models/blacklistedToken.model");
+const WhitelistedToken = require("../modules/token/whitelistedToken.model");
+const BlacklistedToken = require("../modules/token/blacklistedToken.model");
 
 cron.schedule("0 0 * * *", async () => {
   // chạy mỗi ngày

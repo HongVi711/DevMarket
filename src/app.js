@@ -5,13 +5,14 @@ const path = require("path");
 require("./cron/expireTokens");
 
 //Routes
-const roleRoute = require("./routers/role.route");
-const authRoute = require("./routers/auth.route");
-const userRoute = require("./routers/user.route");
-const bioRoute = require("./routers/bio.route");
+const roleRoute = require("./modules/User/routes/role.route");
+const authRoute = require("./modules/Auth/routes/auth.route");
+const userRoute = require("./modules/User/routes/user.route");
+const bioRoute = require("./modules/User/routes/bio.route");
+const projectRoute = require("./modules/Project/routes/project.route");
 //==============================
 //Middlewares
-const errorMiddleware = require("./middlewares/error.middleware");
+const errorMiddleware = require("./shared/middlewares/error.middleware");
 //==============================
 const app = express();
 
@@ -26,6 +27,7 @@ app.use("/api/v1/auth", authRoute);
 app.use("/api/v1/roles", roleRoute);
 app.use("/api/v1/users", userRoute);
 app.use("/api/v1/bio", bioRoute);
+app.use("/api/v1/project", projectRoute);
 
 // Error handling middleware (luôn đặt cuối cùng)
 app.use(errorMiddleware);
