@@ -1,6 +1,7 @@
 const projectRepository = require('../repository/project.repository');
 const projectTagModel = require('../models/projectTag.model');
 const learningPackModel = require('../models/learningPack.model');
+const technologyModel = require('../models/technology.model');
 
 exports.getAllProjects = async(req)=>{
     try{
@@ -21,8 +22,16 @@ exports.getAllProjects = async(req)=>{
         }
 
         if (technologies) {
-            const techArray = technologies.split(',').map(tech => tech.trim());
-            query.technologies = { $in: techArray };
+            const techArray = technologies.split(',').map(t => t.trim());
+            const techDocs = await technologyModel.find({
+                $or: [
+                { slug: { $in: techArray } },
+                { name: { $in: techArray } }
+                ]
+            });
+
+            const techIds = techDocs.map(t => t._id);
+            query.technologies = { $in: techIds };
         }
 
         if (level) {
@@ -45,14 +54,6 @@ exports.getAllProjects = async(req)=>{
                 sort = { createdAt: -1 };
                 break;
         }
-
-        // const projects = await projectRepository
-        //     .find(query)
-        //     .populate("authorId","displayName photo email" )
-        //     .populate("learningPackId", "title description")
-        //     .select("title slug description thumbnailUrl demoVideoUrl level technologies price discountPrice createdAt authorId isPublished isBundleItem learningPackId")
-        //     .sort(sort);
-
         const projects = await projectRepository.find(query, sort);
         return projects;
     }catch (error) {
@@ -154,6 +155,24 @@ exports.createProject = async (data, userId)=>{
             }
         }
 
+        const technologyIds = await Promise.all(
+            technologies.map(async (techSlugOrName) => {
+                const tech = await technologyModel.findOne({
+                $or: [
+                    { slug: techSlugOrName },
+                    { name: techSlugOrName }
+                ]
+                });
+
+                if (!tech) {
+                    const slug = techSlugOrName.toLowerCase().replace(/\s+/g, '-');
+                    tech = await technologyModel.create({ name: techSlugOrName, slug });
+                }
+
+                return tech._id;
+            })
+        );
+
         let tagIds = [];
         if (tags && tags.length > 0) {
             tagIds = await Promise.all(
@@ -170,11 +189,11 @@ exports.createProject = async (data, userId)=>{
             );
         }
 
-          const projectPayload = {
+        const projectPayload = {
             title,
             slug,
             description,
-            technologies,
+            technologies: technologyIds, 
             level,
             price,
             thumbnailUrl,
@@ -199,7 +218,7 @@ exports.createProject = async (data, userId)=>{
                 thumbnailUrl: project.thumbnailUrl,
                 demoVideoUrl: project.demoVideoUrl,
                 level: project.level,
-                technologies: project.technologies,
+                technologies: technologyIds,
                 price: project.price,
                 discountPrice: project.discountPrice || null,
                 createdAt: project.createdAt,
@@ -211,6 +230,6 @@ exports.createProject = async (data, userId)=>{
             },
         };    
     } catch (error) {
-    throw error;
+        throw new Error(error.message);
     }
 }

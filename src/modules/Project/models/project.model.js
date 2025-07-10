@@ -11,7 +11,7 @@ const projectSchema = new mongoose.Schema({
     enum: ['Beginner', 'Intermediate', 'Advanced'], 
     required: true 
   },
-  technologies: [{ type: String, required: true }], // mảng string
+  technologies: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Technology', required: true }], // mảng string
   price: { type: Number, required: true },
   discountPrice: { type: Number }, // optional
   createdAt: { type: Date, default: Date.now },
